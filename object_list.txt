@@ -1,0 +1,23 @@
+Sphere
+0 0 -4
+1
+lambertian
+one_color
+1 0 1
+
+Sphere
+-2 0 -4
+1
+miroir
+image_texture
+earthmap.jpg
+1000
+500
+3
+
+Plan
+0 -1 0
+2 -2 -1
+granule_reflet
+one_color
+1 1 1
