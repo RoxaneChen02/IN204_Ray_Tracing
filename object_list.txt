@@ -11,16 +11,21 @@ mars.jpg
 Sphere
 -2 0 -4
 1
-miroir
-image_texture
-venus.jpg
-1000
-500
-3
+transparent
+one_color
+1
+1 1 1
+
+Sphere
+-2 0 -8
+1
+lambertian
+one_color
+1 0 0
 
 Plan
 0 -1 0
 2 -2 -1
-miroir
+lambertian
 one_color
-1 1 1
+1 0 0

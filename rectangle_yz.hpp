@@ -32,14 +32,14 @@ bool hit = hitPoint.y() <= maximum.y() && hitPoint.y() >= minimum.y() &&
            hitPoint.z() >= maximum.z() && hitPoint.z() <= minimum.z();
 
 if(t_min>t||t>t_max) {
-   //std::cerr<<"t<10";
+   
     return false;}
 
 if (hit ){
             rec.t = t;
             rec.p = r.at(rec.t);
             vec3 n = vec3(1,0,0);
-            rec.set_face_normal(r, n); //détermine le sens de la normal 
+            rec.set_face_normal(r, n); 
             rec.mat_ptr = mat_ptr;
             if(rec.p.x()>0){
             rec.u = 1-(rec.p.z()-minimum.z())/(maximum.z()-minimum.z());

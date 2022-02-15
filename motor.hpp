@@ -54,8 +54,8 @@ color ray_color(const ray& r, const hittable& world, int depth, const light_list
         
 
         if(rec.mat_ptr->scatter(r, rec, attenuation_reflected, attenuation_ref_dif, rayon_reflected, rayon_ref_dif, bool_split_ray)){
-            if(bool_split_ray) //Dans le cas, où il y a séparation, rayon réfléchi et rayon réfracté
-                return attenuation_reflected * ray_color(rayon_reflected, world, int((depth-1)/2), light_l, max_depth, hit_something, added_light) + attenuation_ref_dif * ray_color(rayon_ref_dif, world, int((depth-1)/2), light_l, max_depth, hit_something, added_light) ;
+            if(bool_split_ray) //Dans le cas, où il y a séparation, rayon réfléchi et rayon réfracté(rayon_ref_dif)
+                return attenuation_reflected * ray_color(rayon_reflected, world, depth-1, light_l, max_depth, hit_something, added_light) + attenuation_ref_dif * ray_color(rayon_ref_dif, world,depth-1, light_l, max_depth, hit_something, added_light) ;
             else //Le rayon émis est unique
                 return attenuation_reflected * ray_color(rayon_reflected, world, depth-1, light_l, max_depth, hit_something, added_light);
         }
