@@ -8,13 +8,13 @@
 
 class DirectionalLight : public light{
     public : 
-        vec3 color;
+        color couleur;
         float intensity;
         vec3 direction;
 
         
 
-        DirectionalLight(vec3 col,float inten,vec3 direc) : color(col),intensity(inten),direction(direc) {}
+        DirectionalLight(color col,float inten,vec3 direc) : couleur(col),intensity(inten),direction(direc) {}
 
         virtual vec3 hit_light(hit_record& rec, hit_record& rec_shadow,const hittable& world) const override;
 
@@ -34,7 +34,7 @@ class DirectionalLight : public light{
                 //Puissance de la lumière dépendant de la colinéarité du rayon lumineux et de la normale de l'impact
                 float light_power = std::max(0.0,dot(rec.normal,unit_vector(-direction)))*light_intensity;
                 
-                value = (light_power*color);
+                value = (light_power*couleur);
 
                 return value;
         }

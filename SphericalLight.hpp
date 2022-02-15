@@ -11,11 +11,11 @@
 class SphericalLight : public light {
     public : 
         point3 position;
-        vec3 color;
+        color couleur;
         float intensity;
         double radius;
         //char type = 'S';
-        SphericalLight(point3 p,vec3 c, float inten, double rayon) : position(p),color(c),intensity(inten), radius(rayon) {}
+        SphericalLight(point3 p,color c, float inten, double rayon) : position(p),couleur(c),intensity(inten), radius(rayon) {}
         virtual vec3 hit_light(
             hit_record& rec, hit_record& rec_shadow,const hittable& world) const override;
 
@@ -37,7 +37,7 @@ class SphericalLight : public light {
                 //Puissance de la lumière dépenante de la colinéarité du vecteur lumineux et de la normale de l'impact
                 //Dépedance de la puissance avec la distance parcouru par le rayon lumineux (Atténuation sphérique)
                 light_intensity = std::max(0.0, dot(rec.normal,-unit_vector(rec.p-position)))* light_intensity / (4*pi*(position + ray_direction * radius -rec.p).length_squared());
-                value = (light_intensity *color);
+                value = (light_intensity *couleur);
                 return value;
         }
 
