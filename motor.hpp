@@ -55,11 +55,9 @@ color ray_color(const ray& r, const hittable& world, int depth, const light_list
 
         if(rec.mat_ptr->scatter(r, rec, attenuation_reflected, attenuation_ref_dif, rayon_reflected, rayon_ref_dif, bool_split_ray)){
             if(bool_split_ray) //Dans le cas, où il y a séparation, rayon réfléchi et rayon réfracté
-            
                 return attenuation_reflected * ray_color(rayon_reflected, world, int((depth-1)/2), light_l, max_depth, hit_something, added_light) + attenuation_ref_dif * ray_color(rayon_ref_dif, world, int((depth-1)/2), light_l, max_depth, hit_something, added_light) ;
             else //Le rayon émis est unique
                 return attenuation_reflected * ray_color(rayon_reflected, world, depth-1, light_l, max_depth, hit_something, added_light);
-
         }
         else{
             return added_light + rec.mat_ptr->emitted(rec.u, rec.v,rec.p);
@@ -127,12 +125,12 @@ class anti_aliasing_engine_OMP : public moteur{
             vec3 added_light;
             auto start = std::chrono::system_clock::now();
             std::cout <<"P3\n" << image_width << ' ' << image_height << "\n255\n";
-            #pragma omp parallel for schedule (dynamic)
             for (int j = image_height-1; j >= 0; --j){
                 std::cerr << "\rScanlines remaining : " << j << ' '<< std::flush;
                 for(int i = 0; i < image_width; ++i){
                     color pixel_color(0, 0, 0);
                     //Samples_per_pixels pour l'anti aliasing, explique la présence d'une troisième boucle for
+                    #pragma omp parallel for schedule(dynamic)
                     for (int s = 0; s < nombre_de_pixels; ++s) {
                         auto u = (i + random_double()) / (image_width-1);
                         auto v = (j + random_double()) / (image_height-1);
