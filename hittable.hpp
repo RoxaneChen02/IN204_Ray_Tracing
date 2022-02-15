@@ -7,14 +7,13 @@
 class material;
 
 struct hit_record {
-    point3 p; //Point d'incidence
-    vec3 normal;
+    point3 p;                   //Point d'incidence
+    vec3 normal;                //Normale du plan d'incidence
     shared_ptr<material> mat_ptr; //Indique le type de diffusion, selon le matériau
-    double t;
-    double u,v;
+double t;                        //Position sur le rayon d'impact
+    double u,v; 
     bool front_face;
-    //For ray_color   
-    //ray original_ray; 
+ 
 
     inline void set_face_normal(const ray& r, const vec3& outward_normal) { //Toujours le rayon qui vient de l'extérieur
         front_face = dot(r.direction(), outward_normal) < 0;

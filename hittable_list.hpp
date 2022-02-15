@@ -9,7 +9,7 @@
 using std::shared_ptr;
 using std::make_shared;
 
-class hittable_list : public hittable {
+class hittable_list : public hittable { //Classe héritant de la la class hit, permet de faire une liste d'objets atteignables
     public:
         hittable_list() {}
         hittable_list(shared_ptr<hittable> object) { add(object); }
@@ -23,6 +23,7 @@ class hittable_list : public hittable {
     public:
         std::vector<shared_ptr<hittable>> objects;
 };
+
 
 bool hittable_list::hit(const ray& r, double t_min, double t_max, hit_record& rec) const {
     hit_record temp_rec;
