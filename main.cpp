@@ -28,8 +28,8 @@
 //#define STB_IMAGE_IMPLEMENTATION
 //#include "stb_image.h"
 
-#define MAX_DEPTH 10
-#define SAMPLES 400
+#define MAX_DEPTH 5
+#define SAMPLES 200
 
 
 int main(int argc,char *argv[]){
@@ -67,12 +67,7 @@ int main(int argc,char *argv[]){
     light_scene.add(make_shared<DirectionalLight>(unit_vector(color(0.5,0.7,1.0)), 1, vec3(0,0,-1)));
     light_scene.add(make_shared<DirectionalLight>(unit_vector(color(0.5,0.7,1.0)), 1, vec3(-1,-1,0)));
 
-    //Lecteur de scènes !
-    scene scene_des = scene();
-    scene_des.object_load();
-    //scene_des.light_load();
-
-    vec3 added_light;
+    
 
     //Camera
     camera cam(vec3(0,0,0), vec3(0,0,-1), vec3(0,1,0), 90, aspect_ratio);
@@ -84,15 +79,31 @@ int main(int argc,char *argv[]){
     std::cerr << "3.TBB" << std::endl;
     char entry[256];
     std::cin >> entry;
+
+    std::cerr << "Choix fichier descripteur des lumières : " << std::endl;
+    char light_txt[256];
+    std::cin >> light_txt;
+
+    std::cerr << "Choix fichier descripteur des objets : " << std::endl;
+    char objects_txt[256];
+    std::cin >> objects_txt;
+
+    //Lecteur de scènes !
+    scene scene_des = scene();
+    scene_des.object_load(objects_txt);
+    scene_des.light_load(light_txt);
+
+    vec3 added_light;
+
     if(strcmp(entry,"3")==0){
         anti_aliasing_engine_TBB engine1(SAMPLES, image_width, aspect_ratio);
-        engine1.color_image(MAX_DEPTH, light_scene, scene_des.world, cam);}
+        engine1.color_image(MAX_DEPTH, scene_des.light_l, scene_des.world, cam);}
     if(strcmp(entry,"2")==0){
         anti_aliasing_engine_OMP engine1(SAMPLES, image_width, aspect_ratio);
-        engine1.color_image(MAX_DEPTH, light_scene, scene_des.world, cam);}
+        engine1.color_image(MAX_DEPTH, scene_des.light_l, scene_des.world, cam);}
     if(strcmp(entry,"1")==0){
         anti_aliasing_engine engine1(SAMPLES, image_width, aspect_ratio);
-        engine1.color_image(MAX_DEPTH, light_scene, scene_des.world, cam);}
+        engine1.color_image(MAX_DEPTH, scene_des.light_l, scene_des.world, cam);}
 
     //Commande de compilation g++ -std=c++11 -fPIC -O3 -march=native -Wall  -o TBB.exe main2.cpp -lmpi -fopenmp -ltbb
 
