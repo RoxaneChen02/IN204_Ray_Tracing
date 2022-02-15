@@ -1,5 +1,5 @@
-#ifndef SPHERICALLIGHT_HPP
-#define SPHERICALLIGHT_HPP
+#ifndef PonctualLIGHT_HPP
+#define PonctualLIGHT_HPP
 
 
 #include "vec3.hpp"
@@ -8,19 +8,19 @@
 
 
 
-class SphericalLight : public light {
+class PonctualLight : public light {
     public : 
         point3 position;
         color couleur;
         float intensity;
 
-        SphericalLight(point3 p,color c, float inten) : position(p),couleur(c),intensity(inten){}
+        PonctualLight(point3 p,color c, float inten) : position(p),couleur(c),intensity(inten){}
         virtual vec3 hit_light(
             hit_record& rec, hit_record& rec_shadow,const hittable& world) const override;
 
 };
 
-    vec3 SphericalLight::hit_light(hit_record& rec, hit_record& rec_shadow, const hittable& world) const {
+    vec3 PonctualLight::hit_light(hit_record& rec, hit_record& rec_shadow, const hittable& world) const {
         vec3 value;
         float light_intensity = intensity;
         ray ray_shadow = ray(rec.p+(1e-13*rec.normal),unit_vector(position-rec.p));
