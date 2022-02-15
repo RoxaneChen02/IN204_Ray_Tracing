@@ -192,6 +192,7 @@ class anti_aliasing_engine_TBB : public moteur{
             auto end = std::chrono::system_clock::now();
             std::chrono::duration<double> deltaT = end - start;
             std::cerr << std::endl << "Calcul de l'image en " << deltaT.count() << " secondes." << std::endl;
+            //Réécriture de l'image dans le bon sens
             for(int j = image_height -1 ; j >= 0  ;--j){
                 for(int i = 0; i < image_width; ++i){
                     write_color(std::cout,image[j*image_width + i],nombre_de_pixels);
