@@ -37,20 +37,20 @@ int main(int argc,char *argv[]){
     const auto aspect_ratio = 16.0/9.0; 
     const int image_width = 400;
     //const int image_height = static_cast<int>(image_width/aspect_ratio);
-    const int samples_per_pixel = 400;
 
     //Nombre d'itération de rayons diffusés
-    const int max_depth = 10;
 
     // Liste d'objets présents sur la scène et leur description
     //hittable_list world;
+
     //Description du type de réflexion ou de diffusion
     //auto material_sol = make_shared<lambertian>(color(0.1, 0.25, 0.5));
 
-    
+    //Exemple d'ajout sur la liste world
+    //world.add(make_shared<sphere>(mercury_pos, 0.7, material_mercury   ));
+
     
 
-    //Ajout d'objets sur la scène
 
     //int nx = 1000;
     //int ny = 500;
@@ -75,10 +75,9 @@ int main(int argc,char *argv[]){
     vec3 added_light;
 
     //Camera
-    camera cam;
+    camera cam(vec3(0,0,0), vec3(0,0,-1), vec3(0,1,0), 90, aspect_ratio);
 
     //Moteur de rendu, écrit sur le flux sortant std::out !
-    //anti_aliasing_engine engine1(samples_per_pixel, image_width, aspect_ratio);
     std::cerr << "Choix du moteur : Insérer le numéro" << std::endl;
     std::cerr << "1.Classique" << std::endl;
     std::cerr << "2.OpenMP" << std::endl;
@@ -86,17 +85,14 @@ int main(int argc,char *argv[]){
     char entry[256];
     std::cin >> entry;
     if(strcmp(entry,"3")==0){
-        anti_aliasing_engine_TBB engine1(samples_per_pixel, image_width, aspect_ratio);
-        //engine1.color_image(max_depth, scene_des.light_l, world, cam);
-        engine1.color_image(max_depth, light_scene, scene_des.world, cam);}
+        anti_aliasing_engine_TBB engine1(SAMPLES, image_width, aspect_ratio);
+        engine1.color_image(MAX_DEPTH, light_scene, scene_des.world, cam);}
     if(strcmp(entry,"2")==0){
-        anti_aliasing_engine_OMP engine1(samples_per_pixel, image_width, aspect_ratio);
-        //engine1.color_image(max_depth, scene_des.light_l, world, cam);
-        engine1.color_image(max_depth, light_scene, scene_des.world, cam);}
+        anti_aliasing_engine_OMP engine1(SAMPLES, image_width, aspect_ratio);
+        engine1.color_image(MAX_DEPTH, light_scene, scene_des.world, cam);}
     if(strcmp(entry,"1")==0){
-        anti_aliasing_engine engine1(samples_per_pixel, image_width, aspect_ratio);
-        //engine1.color_image(max_depth, scene_des.light_l, world, cam);
-        engine1.color_image(max_depth, light_scene, scene_des.world, cam);}
+        anti_aliasing_engine engine1(SAMPLES, image_width, aspect_ratio);
+        engine1.color_image(MAX_DEPTH, light_scene, scene_des.world, cam);}
 
     //Commande de compilation g++ -std=c++11 -fPIC -O3 -march=native -Wall  -o TBB.exe main2.cpp -lmpi -fopenmp -ltbb
 

@@ -46,7 +46,7 @@ bool sphere::hit(const ray& r, double t_min, double t_max, hit_record& rec) cons
 
     vec3 outward_normal = (rec.p - center) / radius;
     
-       // récupérer u et v pour la texture;
+    // récupérer u et v pour la texture;
     rec.u = (atan2(-outward_normal.z(), outward_normal.x()) + pi)/(2*pi);
     rec.v = acos(-outward_normal.y()) / pi;
 

@@ -5,6 +5,7 @@
 #include "texture.hpp"
 #include "vec3.hpp"
 
+//Calcul du rayon réfracté
 vec3 refract(double rapport_optique, vec3 direction_i, vec3 normal, double cos_theta){
     vec3 Refracted_perpendiculaire =  rapport_optique * ( unit_vector( direction_i) + cos_theta*unit_vector(normal) );
     vec3 Refracted_parallel =  -sqrt(1 - Refracted_perpendiculaire.length_squared() )* normal;
@@ -12,10 +13,12 @@ vec3 refract(double rapport_optique, vec3 direction_i, vec3 normal, double cos_t
     return refracted_direction;
 }
 
+//Calcul du rayon réfléchi
 vec3 reflect(vec3 r_i, vec3 normal){
     return  unit_vector(r_i - 2*dot(r_i,normal)*normal);
 }
 
+//Calcul du coefficient de Fresnel
 float Coef_Fresnel(const ray& r_in, hit_record& rec, float eta){
             float Fr; //coefficient de Fresnel : le pourcentage de lumière rélféchie
             float etai,etaf;
@@ -108,7 +111,7 @@ class miroir : public material {
 };
 
 
-class refraction : public material {
+class refraction : public material { //réfraction simple
     public:
         refraction(const double& indice_refraction, color couleur) : eta(indice_refraction), albedo(make_shared<one_color>(couleur)){}
         refraction(const double& indice_refraction, shared_ptr<texture> couleur) : eta(indice_refraction), albedo(couleur){}
@@ -118,38 +121,27 @@ class refraction : public material {
             const ray& r_in, hit_record& rec, color& attenuation_reflected, color& attenuation_ref_dif, ray& scattered, ray& refracted, bool& bool_split_ray
         ) const override {
             double rapport_optique;
-            //double coefficient_fresnel;
             if(rec.front_face){ //Rayon rentre à l'intérieur de la boule
                  rapport_optique =  1/eta;
             }
             else{
                rapport_optique = eta;  //Sinon le rayon sort de la boule
             }
-            //coefficient_fresnel = -(1-rapport_optique)/(1+rapport_optique);
-            //coefficient_fresnel = coefficient_fresnel * coefficient_fresnel;
-            //coefficient_fresnel = 0.1;
+
             
             double cos_theta = dot(-unit_vector(r_in.direction()), unit_vector(rec.normal)); //Les deux vecteurs sont dans des sens opposés
             double sin_theta =   sqrt(1 - cos_theta*cos_theta); //Racine ( 1 - cos(theta)²)
             double sin_theta_refracted = rapport_optique*sin_theta;
-            //double cos_theta_refracted = sqrt(1 - sin_theta_refracted*sin_theta_refracted);
 
-            //double schlick_approximation = mix(pow(1-cos_theta,2),1,coefficient_fresnel);
-            //double schlick_approximation = 0;
 
-            //std::cerr << schlick_approximation << std::endl;
             if( (sin_theta_refracted > 1 )){
-                //std::cerr << "I'm REFLECTING"<< std::endl;
                 //Réflexion totale
-                //bool_split_ray = false;
                 vec3 reflected = reflect(unit_vector(r_in.direction()), rec.normal);
                 scattered = ray(rec.p, reflected);
                 attenuation_reflected =  albedo->get_color(rec.u,rec.v,rec.p);
                 return true;
             }
             else{
-                //bool_split_ray = false;
-                //Refraction
                 vec3 refracted_direction = refract(rapport_optique, r_in.direction(), rec.normal, cos_theta );
                 
                 scattered = ray(rec.p, refracted_direction);
@@ -165,7 +157,7 @@ class refraction : public material {
 };
 
 
-class transparent : public material{
+class transparent : public material{  //Calcul de la réfraction physiquement, avec le coeff de Fesnel, réflechi + réfracté
     public : 
         float eta;
         shared_ptr<texture> albedo;
@@ -226,7 +218,51 @@ class transparent : public material{
         }
 };
 
-class surface_emetteuse : public material  {
+
+class transparence_Schlick : public material { //Approximation de la classe Transparent sans le réel coeff de Fresnel, et possibilité de faire varier la transparence et la transmittance
+    public:
+        transparence_Schlick(const double& indice_refraction, color couleur, const double &refl = 0, const double &transp = 0) : eta(indice_refraction), albedo(make_shared<one_color>(couleur)), transparency(transp), reflectivity(refl) {}
+        transparence_Schlick(const double& indice_refraction, shared_ptr<texture> couleur, const double &refl = 0, const double &transp = 0) : eta(indice_refraction), albedo(couleur), transparency(transp), reflectivity(refl) {}
+
+
+        virtual bool scatter(
+            const ray& r_in, hit_record& rec, color& attenuation_reflected, color& attenuation_ref_dif, ray& scattered, ray& refracted, bool& bool_split_ray
+        ) const override {
+            double rapport_optique;
+            bool_split_ray = true;
+            if(rec.front_face){ //Rayon rentre à l'intérieur de la boule
+                rapport_optique =  1/eta; // 
+            }
+            else{
+                rapport_optique = eta; //Sinon le rayon sort de la boule
+            }
+
+            double cos_theta = dot(-unit_vector(r_in.direction()), unit_vector(rec.normal)); //Les deux vecteurs sont dans des sens opposés
+            float fresneleffect = mix(pow(1 - cos_theta, 3), 1, 0.1);
+
+            vec3 reflected = reflect(r_in.direction(), rec.normal);
+            scattered = ray(rec.p, reflected);
+            attenuation_reflected = reflectivity*fresneleffect*albedo->get_color(rec.u,rec.v,rec.p);
+
+            if(transparency >0){
+                vec3 refracted_direction = refract(rapport_optique, r_in.direction(), rec.normal, cos_theta );
+                
+                refracted = ray(rec.p, refracted_direction);
+                attenuation_ref_dif =  ( (1-fresneleffect)*transparency )*   albedo->get_color(rec.u,rec.v,rec.p) ;
+            }          
+            return true;
+        }
+
+    public:
+        double eta; //La réfraction dépend de la longueur d'onde
+        shared_ptr<texture> albedo;
+        double transparency;
+        double reflectivity;
+
+};
+
+
+class surface_emetteuse : public material  { //Objet émettant de la lumière, utilise la diffusion à son avantage
     public:
         surface_emetteuse(shared_ptr<texture> a, double coeff_intens) : emit(a), intensity(coeff_intens) {}
         surface_emetteuse(color c, double coeff_intens) : emit(make_shared<one_color>(c)), intensity(coeff_intens) {}
@@ -246,7 +282,7 @@ class surface_emetteuse : public material  {
         double intensity;
 };
 
-class granule_reflet : public material {
+class granule_reflet : public material { //Effet métal avec du flou
     public:
         granule_reflet(const color& a, double flou) : albedo(make_shared<one_color>(a)), bruit(clamp(flou,0,1)) {}
         granule_reflet(shared_ptr<texture> a, double flou) : albedo(a), bruit(clamp(flou,0,1)) {}
