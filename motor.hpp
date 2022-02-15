@@ -38,10 +38,12 @@ color ray_color(const ray& r, const hittable& world, int depth, const light_list
 
     if (world.hit(r, 0.0000001, infinity, rec)) { //Si on touche un objet
         if(depth == max_depth){
-            added_light = light_l.hit_light(rec,rec_shadow,world);
+            added_light = light_l.hit_light(rec,rec_shadow,world); //On calcule l'intensité de la lumière au premier lancer de ray issu de la caméra
         }
 
-        hit_something = true;
+        //Définition des variables utiles
+        hit_something = true;  //Marqueur qu'un objet a été touché
+        //Deux rayons et deux attenuation/albedo, pour les deux possibles rayons
         ray rayon_reflected;
         ray rayon_ref_dif;
 
@@ -52,13 +54,12 @@ color ray_color(const ray& r, const hittable& world, int depth, const light_list
         
 
         if(rec.mat_ptr->scatter(r, rec, attenuation_reflected, attenuation_ref_dif, rayon_reflected, rayon_ref_dif, bool_split_ray)){
-            if(bool_split_ray)
+            if(bool_split_ray) //Dans le cas, où il y a séparation, rayon réfléchi et rayon réfracté
             
                 return attenuation_reflected * ray_color(rayon_reflected, world, int((depth-1)/2), light_l, max_depth, hit_something, added_light) + attenuation_ref_dif * ray_color(rayon_ref_dif, world, int((depth-1)/2), light_l, max_depth, hit_something, added_light) ;
-            else 
+            else //Le rayon émis est unique
                 return attenuation_reflected * ray_color(rayon_reflected, world, depth-1, light_l, max_depth, hit_something, added_light);
 
-            //return ray_color(rayon_reflected, world, depth-1, light_l, max_depth, hit_something, added_light);
         }
         else{
             return added_light + rec.mat_ptr->emitted(rec.u, rec.v,rec.p);
@@ -69,12 +70,11 @@ color ray_color(const ray& r, const hittable& world, int depth, const light_list
         //std::cerr << added_light << std::flush;
         return added_light;
     }
-    else{
-        //Gradient de bleu, fond de l'écran, ATTENTION il faut que celui conforme avec la lumière principale
+    else{ //COULEUR DU FOND
         vec3 unit_direction = unit_vector(r.direction());
-        auto t = 0.5*(unit_direction.y() + 1.0); //Blue gradient compris entre 0 et 1, la caméra s'étend en y de -1 à 1
-    return (1.0-t)*unit_vector(color(1.0, 1.0, 1.0)) + t*unit_vector(color(0.5,0.7,1.0));   //color(0.5, 0.7, 1.0);
-    //return color(0,0,0);
+        auto t = 0.5*(unit_direction.y() + 1.0); // Création d'un gradient en fond, la caméra s'étend en y de -1 à 1
+        return (1.0-t)*unit_vector(color(1.0, 1.0, 1.0)) + t*unit_vector(color(0.5,0.7,1.0));   //color(0.5, 0.7, 1.0);
+        //return color(0,0,0);
     }      
 }
 

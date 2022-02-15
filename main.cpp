@@ -28,7 +28,8 @@
 //#define STB_IMAGE_IMPLEMENTATION
 //#include "stb_image.h"
 
-
+#define MAX_DEPTH 10
+#define SAMPLES 400
 
 
 int main(int argc,char *argv[]){
@@ -41,57 +42,32 @@ int main(int argc,char *argv[]){
     //Nombre d'itération de rayons diffusés
     const int max_depth = 10;
 
-     // Liste d'objets présents sur la scène et leur description
+    // Liste d'objets présents sur la scène et leur description
     //hittable_list world;
     //Description du type de réflexion ou de diffusion
     //auto material_sol = make_shared<lambertian>(color(0.1, 0.25, 0.5));
-    //auto material_centre = make_shared<refraction>(1,unit_vector(color(1,1,1)));
-    //auto material_gauche   = make_shared<metal>(color(0.8, 0.8, 0.8));
-    //auto material_droite = make_shared<metal>(color(0.8, 0.6, 0.2));
-    //auto material_centre = make_shared<lambertian>(unit_vector(color(1,1,1)));
-    //auto material_gauche   = make_shared<lambertian>(color(1,1,1));
-    //auto texture_droite = one_color(color(1,0,0));
+
     
     
 
     //Ajout d'objets sur la scène
-    //world.add(make_shared<sphere>(point3( 0.0, -100.5, -1.0), 100.0, make_shared<lambertian>(color(0,0,0))));
-    //world.add(make_shared<sphere>(point3( 0,    0.5, -2.0),   1, make_shared<transparent>(1.2,color(1,1,1))));
-    //world.add(make_shared<sphere>(point3( 0,    0.5, -5.0),   0.7, make_shared<lambertian>(color(0,0,1))));
-    //world.add(make_shared<sphere>(point3( 2.25,    0.5, -1),   1, make_shared<lambertian>(color(0,1,0))));
-    //world.add(make_shared<sphere>(point3(0, -0.5 , -2),   0.5, make_shared<surface_emetteuse>(color(1,1,1),10)));
-    //world.add(make_shared<sphere>(point3( 0,    0.5, -4.0),   1, make_shared<lambertian>(color(0,1,0))));
-    //world.add(make_shared<sphere>(point3( -1,    0, -2.0),   0.5, make_shared<lambertian>(color(1,1,0))));
+
     //int nx = 1000;
     //int ny = 500;
     //int nn = 3;
     //unsigned char * earth = stbi_load("earthmap.jpg", &nx, &ny, &nn, 0);
 
-    //world.add(make_shared<sphere>(point3(0,    0.0, -1),   0.5, make_shared<lambertian>(make_shared<image_texture>(earth,nx,ny))));
-    //world.add(make_shared<sphere>(point3( 1.0,    0.0, -1.0),   0.5, material_centre));
      //mat4x4 scaleMatrice = ScaleMatrix(vec3(1,1,1));
      //mat4x4 translateMatrice = TranslateMatrix(vec3(0,-1,-1));
      //mat4x4 translateMatrice1 = TranslateMatrix(vec3(0,-1,-4));
      //mat4x4 scaleMatrice1 = ScaleMatrix(vec3(1,1,1));
-     //world.add(make_shared<rectangle_xz>(ScaleMatrix(vec3(1,1,1)),TranslateMatrix(vec3(0,1,-1)),make_shared<surface_emetteuse>(color(1,1,1),4)));
-    //world.add(make_shared<rectangle_xy>(scaleMatrice,translateMatrice,make_shared<transparent>(1,vec3(1,1,1))));
-    
-    //world.add(make_shared<rectangle_yz>(scaleMatrice,translateMatrice,make_shared<lambertian>(color(1,1,1))));
-    //world.add(make_shared<box_inside>(scaleMatrice1,translateMatrice1,make_shared<lambertian>(color(0,1,0)),make_shared<lambertian>(color(1,0,0))));
 
-    //Light
+    //Lights
     light_list light_scene;
     light_scene.add(make_shared<DirectionalLight>(unit_vector(color(0.5,0.7,1.0)), 1, vec3(0,0,-1)));
     light_scene.add(make_shared<DirectionalLight>(unit_vector(color(0.5,0.7,1.0)), 1, vec3(-1,-1,0)));
-    //light_scene.add(make_shared<DirectionalLight>(unit_vector(color(1,1,1)), 1, vec3(1,-1,0)));
-    //light_scene.add(make_shared<DirectionalLight>(unit_vector(color(1,0,0)), 2, vec3(1,-1,0)));
-    //light_scene.add(make_shared<DirectionalLight>(unit_vector(color(0,0,0.5)), 2, vec3(-1,-1,0)));
-    //light_scene.add(make_shared<DirectionalLight>(unit_vector(color(0,0,1)), 2, vec3(-1,-1,0)));
-    //light_scene.add(make_shared<DirectionalLight>(unit_vector(color(1,1,1)), 15, vec3(1,0,0)));
-    //light_scene.add(make_shared<SphericalLight>(point3(1,1,-1),unit_vector(color(0.5,0.7,0)),1));
-    //light_scene.add(make_shared<SphericalLight>(point3(0,1,0), unit_vector(color(1,1,1)), 1, 0.5));
 
-
+    //Lecteur de scènes !
     scene scene_des = scene();
     scene_des.object_load();
     //scene_des.light_load();
@@ -103,8 +79,6 @@ int main(int argc,char *argv[]){
 
     //Moteur de rendu, écrit sur le flux sortant std::out !
     //anti_aliasing_engine engine1(samples_per_pixel, image_width, aspect_ratio);
-    //Commande de compilation g++ -std=c++11 -fPIC -O3 -march=native -Wall  -o TBB.exe main2.cpp -lmpi -fopenmp -ltbb
-    //anti_aliasing_engine_TBB engine1(samples_per_pixel, image_width, aspect_ratio);
     std::cerr << "Choix du moteur : Insérer le numéro" << std::endl;
     std::cerr << "1.Classique" << std::endl;
     std::cerr << "2.OpenMP" << std::endl;
@@ -124,7 +98,7 @@ int main(int argc,char *argv[]){
         //engine1.color_image(max_depth, scene_des.light_l, world, cam);
         engine1.color_image(max_depth, light_scene, scene_des.world, cam);}
 
-    
+    //Commande de compilation g++ -std=c++11 -fPIC -O3 -march=native -Wall  -o TBB.exe main2.cpp -lmpi -fopenmp -ltbb
 
     std::cerr << "\nDone. \n";
 }
