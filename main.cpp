@@ -11,8 +11,7 @@
 
 #include "light.hpp"
 #include "light_list.hpp"
-#include "DirectionalLight.hpp"
-#include "SphericalLight.hpp"
+
 #include "mat4x4.hpp"
 #include"vec4.hpp"
 #include"rectangle_xy.hpp"

@@ -18,7 +18,7 @@
 #include "light.hpp"
 #include "light_list.hpp"
 #include "DirectionalLight.hpp"
-#include "SphericalLight.hpp"
+#include "PonctualLight.hpp"
 
 //Parallélisation tbb
 #include <tbb/blocked_range2d.h>

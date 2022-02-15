@@ -5,7 +5,7 @@
 #include"light_list.hpp"
 #include <fstream>
 #include"DirectionalLight.hpp"
-#include"SphericalLight.hpp"
+#include"PonctualLight.hpp"
 #include"vec3.hpp"
 #include"material.hpp"
 #include"plan.hpp"
@@ -78,6 +78,9 @@ shared_ptr<material> getMaterial(ifstream& inFile, char* mat, float& param_mat ,
         auto text = getTexture(inFile, texture ,col,titre,nx,ny, n); 
         return make_shared<granule_reflet>(text,param_mat);
     }
+
+    else {std::cerr<<"error inexistant material"; return make_shared<lambertian>(color(0,0,0));}
+
 }
 
 
@@ -197,12 +200,12 @@ void scene::light_load(char* list_txt){
 
         }
 
-        if(strcmp(type,"SphericalLight")==0){
+        if(strcmp(type,"PonctualLight")==0){
             
 
             inFile >> position.e[0]>> position.e[1]>> position.e[2]>> col.e[0] >> col.e[1]>> col.e[2]>> intensity;
 
-            light_l.add(make_shared<SphericalLight>(position,col, intensity));
+            light_l.add(make_shared<PonctualLight>(position,col, intensity));
         }
         
     }
