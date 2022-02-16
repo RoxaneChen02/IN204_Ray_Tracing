@@ -69,10 +69,10 @@ color ray_color(const ray& r, const hittable& world, int depth, const light_list
         return added_light;
     }
     else{ //COULEUR DU FOND
-        vec3 unit_direction = unit_vector(r.direction());
-        auto t = 0.5*(unit_direction.y() + 1.0); // Création d'un gradient en fond, la caméra s'étend en y de -1 à 1
-        return (1.0-t)*unit_vector(color(1.0, 1.0, 1.0)) + t*unit_vector(color(0.5,0.7,1.0));   //color(0.5, 0.7, 1.0);
-        //return color(0,0,0);
+        //vec3 unit_direction = unit_vector(r.direction());
+        //auto t = 0.5*(unit_direction.y() + 1.0); // Création d'un gradient en fond, la caméra s'étend en y de -1 à 1
+        //return (1.0-t)*unit_vector(color(1.0, 1.0, 1.0)) + t*unit_vector(color(0.5,0.7,1.0));   //color(0.5, 0.7, 1.0);
+        return color(0,0,0);
     }      
 }
 

@@ -186,7 +186,7 @@ void scene::light_load(char* list_txt){
         char type[256];
         vec3 direction = vec3();
         color col = color();
-        int intensity;
+        float intensity;
         vec3 position;
 
         inFile >> type;

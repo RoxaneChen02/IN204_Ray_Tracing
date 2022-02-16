@@ -91,6 +91,7 @@ int main(int argc,char *argv[]){
     scene scene_des = scene();
     scene_des.object_load(objects_txt);
     scene_des.light_load(light_txt);
+    
 
     vec3 added_light;
 

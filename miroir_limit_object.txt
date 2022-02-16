@@ -15,7 +15,7 @@ miroir
 one_color
 1 1 1
 
-Rectangle_xy
+//Rectangle_xy
 2 2 0
 2 0 -9
 transparent
@@ -26,9 +26,8 @@ one_color
 Rectangle_xy
 2 2 2 
 0 0 1
-surface_emetteuse
+miroir
 one_color
-1
 1 1 1
 
 Sphere

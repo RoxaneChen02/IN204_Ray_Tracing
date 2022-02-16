@@ -8,7 +8,7 @@
 class rectangle_xy : public hittable{
     public:
         rectangle_xy(const point3& a, const point3& b, shared_ptr<material> m) { minimum = a; maximum = b;mat_ptr =m;}
-        rectangle_xy(mat4x4 mat_t, mat4x4 mat_s,  shared_ptr<material> m) { minimum =(mat_t* mat_s*vec4(-1,-1,0,1)).xyz() ; maximum = (mat_t* mat_s*vec4(1,1,0,1)).xyz();mat_ptr= m;}
+        rectangle_xy(mat4x4 mat_t, mat4x4 mat_s,  shared_ptr<material> m) { minimum =(mat_s*(mat_t*vec4(-1,-1,0,1))).xyz() ; maximum = (mat_s*(mat_t* vec4(1,1,0,1))).xyz();mat_ptr= m;}
 
         virtual bool hit( const ray& r, double t_min, double t_max, hit_record& rec) const override;
 

@@ -190,13 +190,13 @@ class transparent : public material{  //Calcul de la réfraction physiquement, a
                 vec3 refracted_direction = refract(rapport_optique, unit_vector(r_in.direction()), unit_vector(rec.normal), cos_theta);
                 point3 refractionRayOrig = rec.front_face ? rec.p - bias : rec.p + bias; 
                 refracted = ray(refractionRayOrig,refracted_direction);
-                color_refracted = (1-Fr)*color(1,1,1);
+                color_refracted = (1-Fr)*albedo->get_color(rec.u,rec.v,rec.p);
 
                 vec3 reflectionDirection = reflect(r_in.direction(), rec.normal);
                 vec3 reflectionRayOrig = rec.front_face ? rec.p + bias : rec.p - bias; 
                 reflected = ray(reflectionRayOrig,reflectionDirection);
         
-                color_reflected = Fr*color(1,1,1);
+                color_reflected = Fr*albedo->get_color(rec.u,rec.v,rec.p);
                 //std::cerr<<Fr<<"\n";
                 bool_split_ray  =true;
                 
@@ -208,7 +208,7 @@ class transparent : public material{  //Calcul de la réfraction physiquement, a
                 vec3 reflectionRayOrig = rec.front_face ? rec.p + bias : rec.p - bias; 
                 reflected = ray(reflectionRayOrig,reflectionDirection);
 
-            color_reflected = color(1,1,1);
+            color_reflected = albedo->get_color(rec.u,rec.v,rec.p);
              color_refracted = color(0,0,0);
             bool_split_ray = true;}
             

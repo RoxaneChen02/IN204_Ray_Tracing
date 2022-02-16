@@ -1,0 +1,20 @@
+
+Rectangle_xy
+9 6 0
+0 0 -12
+lambertian
+image_texture
+posx.jpg
+1000
+1000
+3
+
+
+Sphere
+0 0 -4
+1
+transparent
+one_color
+1.2
+1 0.7 0.2
+
