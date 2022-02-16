@@ -41,6 +41,8 @@ if (hit ){
             vec3 n = vec3(1,0,0);
             rec.set_face_normal(r, n); 
             rec.mat_ptr = mat_ptr;
+
+            // on s'assure que l'image soit à l'endroit
             if(rec.p.x()>0){
             rec.u = 1-(rec.p.z()-minimum.z())/(maximum.z()-minimum.z());
             rec.v = (rec.p.y()-minimum.y())/(maximum.y()-minimum.y());}

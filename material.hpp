@@ -168,25 +168,25 @@ class transparent : public material{  //Calcul de la réfraction physiquement, a
         virtual bool scatter(const ray& r_in, hit_record& rec, color& color_reflected, color& color_refracted, ray& reflected, ray& refracted, bool& bool_split_ray) const override{
             double rapport_optique;
             
-            // compute fresnel
-           if(rec.front_face){ //Rayon rentre à l'intérieur de la boule
-                rapport_optique =  1/eta; // 
+           
+           if(rec.front_face){ 
+                rapport_optique =  1/eta; 
             }
             else{
-                rapport_optique = eta; //Sinon le rayon sort de la boule
+                rapport_optique = eta; 
             }
 
             float Fr = Coef_Fresnel(r_in, rec, eta);
             
-            //std::cerr<<Fr<<"\n";
+            
             
            
             double cos_theta = dot(-unit_vector(r_in.direction()), unit_vector(rec.normal)); //Les deux vecteurs sont dans des sens opposés
-            //float Fr = mix(pow(1-cos_theta,3),1,(1+rapport_optique)/(1-rapport_optique));
+            
             point3 bias = 1e-13*rec.normal;
 
             if (Fr < 1 ) { // il y a à la fois réfraction et réflexion
-                //std::cerr<<"parfois";
+               
                 vec3 refracted_direction = refract(rapport_optique, unit_vector(r_in.direction()), unit_vector(rec.normal), cos_theta);
                 point3 refractionRayOrig = rec.front_face ? rec.p - bias : rec.p + bias; 
                 refracted = ray(refractionRayOrig,refracted_direction);
@@ -197,13 +197,13 @@ class transparent : public material{  //Calcul de la réfraction physiquement, a
                 reflected = ray(reflectionRayOrig,reflectionDirection);
         
                 color_reflected = Fr*albedo->get_color(rec.u,rec.v,rec.p);
-                //std::cerr<<Fr<<"\n";
+                
                 bool_split_ray  =true;
                 
             } 
  
             else{
-                //std::cerr<<"Fr>1";
+                
                 vec3 reflectionDirection = reflect(r_in.direction(), rec.normal);
                 vec3 reflectionRayOrig = rec.front_face ? rec.p + bias : rec.p - bias; 
                 reflected = ray(reflectionRayOrig,reflectionDirection);
