@@ -35,38 +35,6 @@ int main(int argc,char *argv[]){
     //Image
     const auto aspect_ratio = 16.0/9.0; 
     const int image_width = 400;
-    //const int image_height = static_cast<int>(image_width/aspect_ratio);
-
-    //Nombre d'itération de rayons diffusés
-
-    // Liste d'objets présents sur la scène et leur description
-    //hittable_list world;
-
-    //Description du type de réflexion ou de diffusion
-    //auto material_sol = make_shared<lambertian>(color(0.1, 0.25, 0.5));
-
-    //Exemple d'ajout sur la liste world
-    //world.add(make_shared<sphere>(mercury_pos, 0.7, material_mercury   ));
-
-    
-
-
-    //int nx = 1000;
-    //int ny = 500;
-    //int nn = 3;
-    //unsigned char * earth = stbi_load("earthmap.jpg", &nx, &ny, &nn, 0);
-
-     //mat4x4 scaleMatrice = ScaleMatrix(vec3(1,1,1));
-     //mat4x4 translateMatrice = TranslateMatrix(vec3(0,-1,-1));
-     //mat4x4 translateMatrice1 = TranslateMatrix(vec3(0,-1,-4));
-     //mat4x4 scaleMatrice1 = ScaleMatrix(vec3(1,1,1));
-
-    //Lights
-    light_list light_scene;
-    light_scene.add(make_shared<DirectionalLight>(unit_vector(color(0.5,0.7,1.0)), 1, vec3(0,0,-1)));
-    light_scene.add(make_shared<DirectionalLight>(unit_vector(color(0.5,0.7,1.0)), 1, vec3(-1,-1,0)));
-
-    
 
     //Camera
     camera cam(vec3(0,0,0), vec3(0,0,-1), vec3(0,1,0), 90, aspect_ratio);
